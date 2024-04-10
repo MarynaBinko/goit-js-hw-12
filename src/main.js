@@ -144,7 +144,7 @@ function createMarkup(arr) {
         </li>`; })
     .join("")
     ;
-};
+}
 
 
 let toastBox = document.getElementById(`toastBox`);

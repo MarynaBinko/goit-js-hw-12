@@ -39,21 +39,23 @@ async function handleSubmit(event){
     const input = form.querySelector("input[type='text']");
     const searchQuery = input.value;
 
-    loader.style.display = 'flex';
+    loader.style.display = 'inline-block';
     container.innerHTML = "";
     try{
         const { hits } = await searchPictures(searchQuery);
      if (hits.length === 0) {
         loader.style.display = 'none';
-        loadBtn.style.display = 'none'; 
+        loadBtn.style.display = 'none';
         const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there are no images matching your search query. Please try again!`;
         showToast(errorMsg);
+        
         
     }else{ 
         container.insertAdjacentHTML("beforeend", createMarkup(hits));       
         gallery.refresh();
         page ++;
         loader.style.display = 'none';
+        loadBtn.style.marginBottom = '50px';
     }                
 
         if (page > 1) {
@@ -66,19 +68,21 @@ async function handleSubmit(event){
         }
 }
 finally{ 
-    loader.style.displaay = 'none';
+   loader.style.display = 'none';
+  form.reset();
 }
 }
 
 
 async function handleLoadMore() {
-    try {       
+    try {               
         loader.style.display = 'flex';
         loader.style.position = "fixed";
         loader.style.bottom = "0";
         loader.style.left = "50%"; 
         loader.style.transform = "translateX(-50%)";
-
+        
+        
         const { hits } = await searchPictures(form.querySelector("input[type='text']").value);
 
         container.insertAdjacentHTML("beforeend", createMarkup(hits));
@@ -88,7 +92,9 @@ async function handleLoadMore() {
         if (hits.length < per_page) {
             loadBtn.style.display = 'none';
            const  message = `<i class="fa-solid fa-xmark"></i>We're sorry, but you've reached the end of search results.`;
-            showToast(message);         
+            showToast(message);  
+            loadBtn.style.display = 'none';  
+            loader.style.display = 'none';     
         }
         const cardHeight = document.querySelector('.list-item').getBoundingClientRect().height;
         window.scrollBy({ top: cardHeight * 2, behavior: 'smooth' });
@@ -98,14 +104,10 @@ async function handleLoadMore() {
     } finally {
         
         loader.style.display = 'none';
+      
        
     }
 }
-
-
-
-
-
 
 
 

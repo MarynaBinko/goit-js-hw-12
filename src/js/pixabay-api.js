@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_KEY = "43197174-dcc5f5044572d8f441379a766";
-const per_page = 125;
+const per_page = 15;
 
 export async function searchPictures(searchQuery, page) {
     const params = new URLSearchParams({

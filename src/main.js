@@ -31,7 +31,7 @@ loadBtn.addEventListener("click", handleLoadMore);
 const loader = document.getElementById('loader');
  
 let page = 1;
-let per_page = 125;
+let per_page = 15;
 loader.style.display = 'none';
 
 async function handleSubmit(event){

@@ -42,22 +42,22 @@ async function handleSubmit(event){
     loader.style.display = 'inline-block';
     container.innerHTML = "";
     try{
-        const { hits } = await searchPictures(searchQuery);
-     if (hits.length === 0) {
+        const { hits, totalHits } = await searchPictures(searchQuery);
+      
+     if (hits.length === 0 ||  totalHits <= 0 ) {   
         loader.style.display = 'none';
-        loadBtn.style.display = 'none';
+        loadBtn.style.display = 'none';           
         const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there are no images matching your search query. Please try again!`;
         showToast(errorMsg);
-        
+               
         
     }else{ 
         container.insertAdjacentHTML("beforeend", createMarkup(hits));       
         gallery.refresh();
-        page ++;
-        loader.style.display = 'none';
+        page ++;        
         loadBtn.style.marginBottom = '50px';
         loadBtn.style.display = 'block'; 
-    }                
+    }          
 
         }
     catch {(error) => {
@@ -82,16 +82,16 @@ async function handleLoadMore() {
         loader.style.transform = "translateX(-50%)";
         
         
-        const { hits } = await searchPictures(form.querySelector("input[type='text']").value);
-
+        const { hits, totalPages  } = await searchPictures(form.querySelector("input[type='text']").value);
+       
         
-
-        if (hits.length === 0) {
+        if (page >= totalPages) {
             loadBtn.style.display = 'none';
-           const  message = `<i class="fa-solid fa-xmark"></i>We're sorry, but you've reached the end of search results.`;
-            showToast(message);  
+            const  message = `<i class="fa-solid fa-xmark"></i>We're sorry, but you've reached the end of search results.`;
+            showToast(message);             
               
-        }else{container.insertAdjacentHTML("beforeend", createMarkup(hits));
+        }
+        else{container.insertAdjacentHTML("beforeend", createMarkup(hits));
             gallery.refresh();       
              page++;
             }
@@ -100,6 +100,8 @@ async function handleLoadMore() {
     } catch (error) {        
         const errorMsg = `<i class="fa-solid fa-xmark"></i>We're sorry, but you've reached the end of search results.`;
         showToast(errorMsg);
+        loadBtn.style.display = 'none';
+
     } finally {
         
         loader.style.display = 'none';
@@ -124,7 +126,11 @@ async function searchPictures(searchQuery){
     });
     
     const response = await axios.get(`https://pixabay.com/api/?${params}`);
-    return response.data;
+console.log(response);
+    const { hits, totalHits } = response.data; 
+    const totalPages = Math.ceil(totalHits / per_page);    
+    return { hits, totalHits, totalPages };
+    
 }
 
 

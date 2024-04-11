@@ -56,15 +56,14 @@ async function handleSubmit(event){
         page ++;
         loader.style.display = 'none';
         loadBtn.style.marginBottom = '50px';
+        loadBtn.style.display = 'block'; 
     }                
 
-        if (page > 1) {
-            loadBtn.style.display = 'block';           
         }
-    }
     catch {(error) => {
         const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there are no images matching your search query. Please try again!`;
         showToast(errorMsg)
+        
         }
 }
 finally{ 
@@ -85,17 +84,17 @@ async function handleLoadMore() {
         
         const { hits } = await searchPictures(form.querySelector("input[type='text']").value);
 
-        container.insertAdjacentHTML("beforeend", createMarkup(hits));
-        gallery.refresh();       
-        page++;
+        
 
-        if (hits.length < per_page) {
+        if (hits.length === 0) {
             loadBtn.style.display = 'none';
            const  message = `<i class="fa-solid fa-xmark"></i>We're sorry, but you've reached the end of search results.`;
             showToast(message);  
-            loadBtn.style.display = 'none';  
-            loader.style.display = 'none';     
-        }
+              
+        }else{container.insertAdjacentHTML("beforeend", createMarkup(hits));
+            gallery.refresh();       
+             page++;
+            }
         const cardHeight = document.querySelector('.list-item').getBoundingClientRect().height;
         window.scrollBy({ top: cardHeight * 2, behavior: 'smooth' });
     } catch (error) {        

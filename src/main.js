@@ -42,6 +42,7 @@ async function handleSubmit(event){
     loader.style.display = 'inline-block';
     container.innerHTML = "";
     try{
+        page = 1;
         const { hits, totalHits } = await searchPictures(searchQuery);
       
      if (hits.length === 0 ||  totalHits <= 0 ) {   
@@ -71,6 +72,8 @@ async function handleSubmit(event){
 finally{ 
    loader.style.display = 'none';
    form.reset();
+  
+ 
       }
 }
 
@@ -131,6 +134,7 @@ async function searchPictures(searchQuery){
 console.log(response);
     const { hits, totalHits } = response.data; 
     const totalPages = Math.ceil(totalHits / per_page);    
+    page = 1;
     return { hits, totalHits, totalPages };
     
 }

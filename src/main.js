@@ -51,13 +51,15 @@ async function handleSubmit(event){
         showToast(errorMsg);
                
         
-    }else{ 
+    }else if (hits.length  <= per_page) {
         container.insertAdjacentHTML("beforeend", createMarkup(hits));       
         gallery.refresh();
         page ++;        
         loadBtn.style.marginBottom = '50px';
-        loadBtn.style.display = 'block'; 
-    }          
+        loadBtn.style.display = 'block';
+       
+    }       
+        
 
         }
     catch {(error) => {
@@ -68,8 +70,8 @@ async function handleSubmit(event){
 }
 finally{ 
    loader.style.display = 'none';
-  form.reset();
-}
+   form.reset();
+      }
 }
 
 

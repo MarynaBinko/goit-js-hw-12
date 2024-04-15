@@ -34,48 +34,44 @@ let page = 1;
 let per_page = 15;
 loader.style.display = 'none';
 
-async function handleSubmit(event){
+
+async function handleSubmit(event) {
     event.preventDefault();
     const input = form.querySelector("input[type='text']");
     const searchQuery = input.value;
 
     loader.style.display = 'inline-block';
     container.innerHTML = "";
-    try{
+    try {
         page = 1;
         const { hits, totalHits } = await searchPictures(searchQuery);
-      
-     if (hits.length === 0 ||  totalHits <= 0 ) {   
-        loader.style.display = 'none';
-        loadBtn.style.display = 'none';           
-        const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there are no images matching your search query. Please try again!`;
-        showToast(errorMsg);
-               
-        
-    }else if (hits.length  <= per_page) {
-        container.insertAdjacentHTML("beforeend", createMarkup(hits));       
-        gallery.refresh();
-        page ++;        
-        loadBtn.style.marginBottom = '50px';
-        loadBtn.style.display = 'block';
-       
-    }       
-        
 
+        if (hits.length === 0 || totalHits <= 0) {
+            loader.style.display = 'none';
+            loadBtn.style.display = 'none';
+            const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there are no images matching your search query. Please try again!`;
+            showToast(errorMsg);
+
+        } else {
+            container.insertAdjacentHTML("beforeend", createMarkup(hits));
+            gallery.refresh();
+            page++;
+            if (hits.length < per_page) {
+                loadBtn.style.display = 'none';
+            } else {
+                loadBtn.style.marginBottom = '50px';
+                loadBtn.style.display = 'block';
+            }
         }
-    catch {(error) => {
-        const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there are no images matching your search query. Please try again!`;
-        showToast(errorMsg)
-        
-        }
+    } catch (error) {
+        const errorMsg = `<i class="fa-solid fa-xmark"></i>Sorry, there was an error processing your request. Please try again!`;
+        showToast(errorMsg);
+    } finally {
+        loader.style.display = 'none';
+        form.reset();
+    }
 }
-finally{ 
-   loader.style.display = 'none';
-   form.reset();
-  
- 
-      }
-}
+
 
 
 async function handleLoadMore() {
@@ -108,11 +104,8 @@ async function handleLoadMore() {
         loadBtn.style.display = 'none';
 
     } finally {
-        
-        loader.style.display = 'none';
-      
-       
-    }
+        loader.style.display = 'none';    
+     }
 }
 
 
